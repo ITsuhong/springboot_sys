@@ -33,7 +33,7 @@ create index role_id
 
 create table routes_module
 (
-    id          int auto_increment comment '路由表id'
+    id          int AUTO_INCREMENT comment '路由表id'
         primary key,
     pid         int                                      not null comment '父级模块，为0时代表为第一级别',
     name        varchar(50)                              not null comment '模块名称',

@@ -21,11 +21,9 @@ public class UserServiceImp extends ServiceImpl<UserMapper, AdminUser> implement
 
     @Override
     public Result login(AdminUser user) {
-
         LambdaQueryWrapper<AdminUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AdminUser::getAccount, user.getAccount());
         AdminUser adminUser = userMapper.selectOne(queryWrapper);
-        System.out.println(adminUser);
         if (adminUser == null) {
             return Result.build(null, ResultCodeEnum.USERNAME_ERROR);
         }
