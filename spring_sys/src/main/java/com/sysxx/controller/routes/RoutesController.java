@@ -21,6 +21,11 @@ public class RoutesController {
         return routesServiceImp.saveRoute(routesModule);
     }
 
+    @PostMapping("/update")
+    public Result update(RoutesModule routesModule) {
+        return routesServiceImp.updateRoutes(routesModule);
+    }
+
     @GetMapping("/findAll")
     public Result findAllRoutes(RoutesModuleList routesModuleList) {
         return routesServiceImp.findAllRoutes(routesModuleList);

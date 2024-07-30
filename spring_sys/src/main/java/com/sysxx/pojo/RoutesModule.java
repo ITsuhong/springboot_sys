@@ -14,6 +14,8 @@ public class RoutesModule {
     private String path;
     private String description;
     @Version
-    private Integer version;
+    private int version;
+    @TableField(exist = false)
+    private Object children;
 
 }

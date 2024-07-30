@@ -17,10 +17,12 @@ public class AdminUser {
     private Integer Administrator;
     private Date createTime;
     private Date updateTime;
-    @TableField(select = false)
     private Integer roleId;
     @Version
     private Integer version;
     @TableField(exist = false)
-    private  String token;
+    private String token;
+
+    @TableField(exist = false)
+    private Object role;
 }

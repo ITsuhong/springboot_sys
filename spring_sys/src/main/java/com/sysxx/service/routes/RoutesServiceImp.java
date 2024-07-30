@@ -11,7 +11,10 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class RoutesServiceImp extends ServiceImpl<RoutesMapper, RoutesModule> implements RoutesService {
@@ -28,10 +31,20 @@ public class RoutesServiceImp extends ServiceImpl<RoutesMapper, RoutesModule> im
 
     @Override
     public Result findAllRoutes(RoutesModuleList listParam) {
+        if (listParam.getPageNum() == null) {
+            listParam.setPageNum(1);
+        }
         Page<RoutesModule> routesModulePage = new Page<>(listParam.getPageNum(), listParam.getPageSize());
         LambdaQueryWrapper<RoutesModule> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(RoutesModule::getPid, 0);
         routesMapper.selectPage(routesModulePage, queryWrapper);
         List<RoutesModule> routesModuleList = routesModulePage.getRecords();
+        for (RoutesModule data : routesModuleList) {
+            LambdaQueryWrapper<RoutesModule> routeWrapper = new LambdaQueryWrapper<>();
+            routeWrapper.eq(RoutesModule::getPid, data.getId());
+            List<RoutesModule> list = routesMapper.selectList(routeWrapper);
+            data.setChildren(list);
+        }
         Result result = new Result();
         result.setData(routesModuleList);
         result.setPageNum(listParam.getPageNum());
@@ -43,6 +56,13 @@ public class RoutesServiceImp extends ServiceImpl<RoutesMapper, RoutesModule> im
     @Override
     public Result deleteRoutes(RoutesModule routesModule) {
         routesMapper.deleteById(routesModule.getId());
+        return Result.ok("ok");
+    }
+
+    @Override
+    public Result updateRoutes(RoutesModule routesModule) {
+//        routesMapper.selectById(routesModule.getId());
+        routesMapper.updateById(routesModule);
         return Result.ok("ok");
     }
 
