@@ -14,4 +14,5 @@ public interface RoutesService extends IService<RoutesModule> {
     Result deleteRoutes(RoutesModule routesModule);
 
     Result updateRoutes(RoutesModule routesModule);
+    Result findByUserId(Integer id);
 }

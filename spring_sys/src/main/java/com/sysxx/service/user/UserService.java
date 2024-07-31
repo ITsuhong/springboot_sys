@@ -16,4 +16,6 @@ public interface UserService extends IService<AdminUser> {
     Result deleteUser(Integer id);
 
     Result updateUser(AdminUser adminUser);
+
+    Result findRoutesTree();
 }

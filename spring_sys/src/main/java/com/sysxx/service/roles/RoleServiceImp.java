@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.sysxx.mapper.roleRoutes.RoleRoutesMapper;
 import com.sysxx.mapper.roles.RolesMapper;
 import com.sysxx.mapper.routes.RoutesMapper;
+import com.sysxx.mapper.user.UserMapper;
 import com.sysxx.pojo.PageModule;
 import com.sysxx.pojo.RoleRoutes;
 import com.sysxx.pojo.Roles;
@@ -32,6 +33,9 @@ public class RoleServiceImp implements RoleService {
 
     @Autowired
     private RoutesMapper routesMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public Result findAll(RolesList pageModule) {
@@ -101,4 +105,6 @@ public class RoleServiceImp implements RoleService {
 
         return Result.ok(null);
     }
+
+
 }

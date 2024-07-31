@@ -3,7 +3,13 @@ package com.sysxx.service.routes;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sysxx.mapper.roleRoutes.RoleRoutesMapper;
+import com.sysxx.mapper.roles.RolesMapper;
 import com.sysxx.mapper.routes.RoutesMapper;
+import com.sysxx.mapper.user.UserMapper;
+import com.sysxx.pojo.AdminUser;
+import com.sysxx.pojo.RoleRoutes;
+import com.sysxx.pojo.Roles;
 import com.sysxx.pojo.RoutesModule;
 import com.sysxx.pojo.list.RoutesModuleList;
 import com.sysxx.utils.Result;
@@ -11,15 +17,20 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class RoutesServiceImp extends ServiceImpl<RoutesMapper, RoutesModule> implements RoutesService {
     @Autowired
     private RoutesMapper routesMapper;
+
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private RolesMapper rolesMapper;
+
+    @Autowired
+    private RoleRoutesMapper roleRoutesMapper;
 
     @Override
     public Result saveRoute(RoutesModule routesModule) {
@@ -65,5 +76,47 @@ public class RoutesServiceImp extends ServiceImpl<RoutesMapper, RoutesModule> im
         routesMapper.updateById(routesModule);
         return Result.ok("ok");
     }
+
+    @Override
+    public Result findByUserId(Integer id) {
+        AdminUser adminUser = userMapper.selectById(id);
+        if (adminUser.getAdministrator() == 1) {
+            RoutesModuleList routesModuleList = new RoutesModuleList();
+            routesModuleList.setPageNum(1);
+            routesModuleList.setPageSize(9999);
+            return this.findAllRoutes(routesModuleList);
+        } else {
+            LambdaQueryWrapper<Roles> queryRoleWrapper = new LambdaQueryWrapper<>();
+            queryRoleWrapper.eq(Roles::getId, adminUser.getRoleId());
+            Roles roles = rolesMapper.selectOne(queryRoleWrapper);
+            LambdaQueryWrapper<RoleRoutes> roleRoutesLambdaQueryWrapper = new LambdaQueryWrapper<>();
+            roleRoutesLambdaQueryWrapper.eq(RoleRoutes::getRolesId, roles.getId());
+            List<RoleRoutes> roleRoutesList = roleRoutesMapper.selectList(roleRoutesLambdaQueryWrapper);
+            List<Integer> list = roleRoutesList.stream().map(RoleRoutes::getRoutesModuleId).toList();
+            List<RoutesModule> routesModuleList = routesMapper.selectBatchIds(list);
+            List<RoutesModule> resultList = routesModuleList.stream().filter(r -> r.getPid() == 0).toList();
+            for (RoutesModule result : resultList) {
+                for (RoutesModule routes : routesModuleList) {
+
+                    if (Objects.equals(routes.getPid(), result.getId())) {
+                        System.out.println(routes);
+                        List<RoutesModule> r = new ArrayList<>();
+                        if (result.getChildren() == null) {
+                            r.add(routes);
+                            result.setChildren(new LinkedList<>(r));
+                        } else {
+                            r.addAll(result.getChildren());
+                            r.add(routes);
+                            result.setChildren(r);
+                        }
+
+                    }
+                }
+            }
+            return Result.ok(resultList);
+        }
+
+    }
+
 
 }

@@ -3,15 +3,17 @@ package com.sysxx.service.user;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sysxx.mapper.roleRoutes.RoleRoutesMapper;
 import com.sysxx.mapper.roles.RolesMapper;
 import com.sysxx.mapper.user.UserMapper;
 import com.sysxx.pojo.AdminUser;
+import com.sysxx.pojo.RoleRoutes;
 import com.sysxx.pojo.Roles;
+import com.sysxx.pojo.RoutesModule;
+import com.sysxx.pojo.list.RoutesModuleList;
 import com.sysxx.pojo.list.UserListParam;
-import com.sysxx.utils.JwtHelper;
-import com.sysxx.utils.MD5Util;
-import com.sysxx.utils.Result;
-import com.sysxx.utils.ResultCodeEnum;
+import com.sysxx.service.routes.RoutesServiceImp;
+import com.sysxx.utils.*;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,11 @@ public class UserServiceImp extends ServiceImpl<UserMapper, AdminUser> implement
 
     @Autowired
     private RolesMapper rolesMapper;
+
+    @Autowired
+    private RoutesServiceImp routesServiceImp;
+    @Autowired
+    private RoleRoutesMapper roleRoutesMapper;
 
     @Override
     public Result login(AdminUser user) {
@@ -96,5 +103,14 @@ public class UserServiceImp extends ServiceImpl<UserMapper, AdminUser> implement
     public Result updateUser(AdminUser adminUser) {
         userMapper.updateById(adminUser);
         return Result.ok(null);
+    }
+
+    @Override
+    public Result findRoutesTree() {
+        String currentToken = UserRequest.getCurrentToken();
+        Long userId = jwtHelper.getUserId(currentToken);
+        return routesServiceImp.findByUserId(Math.toIntExact(userId));
+
+
     }
 }

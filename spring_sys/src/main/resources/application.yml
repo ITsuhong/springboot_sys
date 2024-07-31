@@ -10,6 +10,9 @@ spring:
       username: root
       password: 123456
       driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 mybatis-plus:
   global-config:
     db-config:
@@ -26,3 +29,9 @@ jwt:
   token:
     tokenExpiration: 120 #有效时间,单位分钟
     tokenSignKey: suhong123456  #当前程序签名秘钥 自定义
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    csrf:
+      enabled: true

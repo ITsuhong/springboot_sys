@@ -4,7 +4,7 @@ public enum ResultCodeEnum {
     SUCCESS(200, "success"),
     USERNAME_ERROR(501, "usernameError"),
     PASSWORD_ERROR(503, "passwordError"),
-    NOTLOGIN(504, "notLogin"),
+    NOTLOGIN(401, "notLogin"),
     USERNAME_USED(505, "userNameUsed");
 
     private Integer code;

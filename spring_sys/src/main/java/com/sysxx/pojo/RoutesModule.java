@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.Version;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class RoutesModule {
     private Integer id;
@@ -16,6 +18,6 @@ public class RoutesModule {
     @Version
     private int version;
     @TableField(exist = false)
-    private Object children;
+    private List<RoutesModule> children;
 
 }

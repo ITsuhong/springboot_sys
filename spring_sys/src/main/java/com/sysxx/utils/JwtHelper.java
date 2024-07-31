@@ -17,8 +17,6 @@ public class JwtHelper {
 
 
     public String createToken(Integer userId) {
-        System.out.println("tokenExpiration = " + tokenExpiration);
-        System.out.println("tokenSignKey = " + tokenSignKey);
         String token = Jwts.builder()
                 .setSubject("YYGH_USER")
                 .setExpiration(new Date(System.currentTimeMillis() + tokenExpiration * 1000 * 60))

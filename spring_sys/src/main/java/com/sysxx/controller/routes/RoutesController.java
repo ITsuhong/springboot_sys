@@ -1,5 +1,6 @@
 package com.sysxx.controller.routes;
 
+import com.sysxx.annotations.LoginValidator;
 import com.sysxx.pojo.RoutesModule;
 import com.sysxx.pojo.list.RoutesModuleList;
 import com.sysxx.service.routes.RoutesServiceImp;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/routes-module")
+@LoginValidator
 public class RoutesController {
     @Autowired
     private RoutesServiceImp routesServiceImp;
