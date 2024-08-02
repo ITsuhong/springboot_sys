@@ -15,6 +15,7 @@ import com.sysxx.pojo.list.UserListParam;
 import com.sysxx.service.routes.RoutesServiceImp;
 import com.sysxx.utils.*;
 import lombok.val;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,7 @@ public class UserServiceImp extends ServiceImpl<UserMapper, AdminUser> implement
         LambdaQueryWrapper<AdminUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AdminUser::getAccount, user.getAccount());
         AdminUser adminUser = userMapper.selectOne(queryWrapper);
+
 
         if (adminUser == null) {
             return Result.build(null, ResultCodeEnum.USERNAME_ERROR);

@@ -1,123 +1,48 @@
 package com.sysxx.config;
 
-import io.swagger.annotations.ApiOperation;
-
+import io.swagger.v3.oas.models.Components;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.OAuthFlow;
+import io.swagger.v3.oas.models.security.OAuthFlows;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.PathSelectors;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.oas.annotations.EnableOpenApi;
-import springfox.documentation.service.*;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spi.service.contexts.SecurityContext;
-import springfox.documentation.spring.web.plugins.Docket;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.springframework.http.HttpHeaders;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 /**
- * @program: payment-demo
- * @description:
- * @author: Acerola
- * @create: 2022-03-26 09:45
- **/
+ * <p>Swagger 配置类</p>
+ *
+ * @author By: chegnxuyanshitang
+ * Package com.demo2.config
+ * Ceate Time 2024-04-22 10:25
+ */
 @Configuration
-@EnableOpenApi
-//@EnableSwaggerBootstrapUI
-public class SwaggerConfig {
-
+public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     /**
-     * 创建API
-     * http:IP:端口号/swagger-ui/index.html 原生地址
-     * http:IP:端口号/doc.html bootStrap-UI地址
+     * 设置静态资源映射
+     *
+     * @param registry
      */
+    protected void addResourceHandlers (ResourceHandlerRegistry registry) {
+        registry.addResourceHandler ("/doc.html").addResourceLocations ("classpath:/META-INF/resources/");
+        registry.addResourceHandler ("/webjars/**").addResourceLocations ("classpath:/META-INF/resources/webjars/");
+    }
+
     @Bean
-    public Docket createRestApi() {
-        return new Docket(DocumentationType.OAS_30).pathMapping("/")
-                // 用来创建该API的基本信息，展示在文档的页面中（自定义展示的信息）
-                /*.enable(enable)*/
-                .apiInfo(apiInfo())
-                // 设置哪些接口暴露给Swagger展示
-                .select()
-                // 扫描所有有注解的api，用这种方式更灵活
-                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
-                // 扫描指定包中的swagger注解
-                .apis(RequestHandlerSelectors.basePackage("com.acerola.paymentdemo.controller"))
-                // 扫描所有 .apis(RequestHandlerSelectors.any())
-                .paths(PathSelectors.regex("(?!/ApiError.*).*"))
-                .paths(PathSelectors.any())
-                .build()
-                // 支持的通讯协议集合
-                .protocols(newHashSet("https", "http"))
-                .securitySchemes(securitySchemes())
-                .securityContexts(securityContexts());
-
-    }
-
-    /**
-     * 支持的通讯协议集合
-     * @param type1
-     * @param type2
-     * @return
-     */
-    private Set<String> newHashSet(String type1, String type2){
-        Set<String> set = new HashSet<>();
-        set.add(type1);
-        set.add(type2);
-        return set;
-    }
-
-    /**
-     * 认证的安全上下文
-     */
-    private List<SecurityScheme> securitySchemes() {
-        List<SecurityScheme> securitySchemes = new ArrayList<>();
-        securitySchemes.add((SecurityScheme) new ApiKey("token", "token", "header"));
-        return securitySchemes;
-    }
-
-    /**
-     * 授权信息全局应用
-     */
-    private List<SecurityContext> securityContexts() {
-        List<SecurityContext> securityContexts = new ArrayList<>();
-        securityContexts.add(SecurityContext.builder()
-                .securityReferences(defaultAuth())
-                .forPaths(PathSelectors.any()).build());
-        return securityContexts;
-    }
-
-    private List<SecurityReference> defaultAuth() {
-        AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
-        AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
-        authorizationScopes[0] = authorizationScope;
-        List<SecurityReference> securityReferences = new ArrayList<>();
-        securityReferences.add(new SecurityReference("Authorization", authorizationScopes));
-        return securityReferences;
-    }
-
-    /**
-     * 添加摘要信息
-     */
-    private ApiInfo apiInfo() {
-        // 用ApiInfoBuilder进行定制
-        return new ApiInfoBuilder()
-                // 设置标题
-                .title("微信支付")
-                // 描述
-                .description("微信支付")
-                // 作者信息
-                .contact(new Contact("doctorCloud", null, null))
-                // 版本
-                .version("版本号:V.1")
-                //协议
-                .license("The Apache License")
-                //协议url
-                .licenseUrl("http://www.baidu.com")
-                .build();
+    public OpenAPI apiInfo () {
+        return new OpenAPI ()
+                .info (new Info ()
+                        .title ("demo服务")
+                        .version ("1.0.0")
+                        .description ("demo接口")
+                        .license (new License ().name ("Apache 2.0")
+                                .url ("http://www.yang.com/"))
+                );
     }
 }
